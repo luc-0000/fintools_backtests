@@ -224,8 +224,6 @@ FINTOOLS_ACCESS_TOKEN=your-fintools-access-token
 
 ![alt text](image.png)
 
-```
-
 #### A2A 协议详情
 
 远程 Agent 通过 `remote_agents_a2a/trading_agent_client.py` 与 fintools 网站通信：
