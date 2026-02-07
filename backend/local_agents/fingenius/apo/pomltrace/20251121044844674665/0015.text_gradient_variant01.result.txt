@@ -1,0 +1,76 @@
+===== human =====
+
+You optimize a prompt template.
+
+# Original Prompt Template
+
+根据当前状态 `{{current_stage}}` 和已收集数据 `{{collected_data}}`，判断哪些流程已经执行完毕，直接执行下一个流程。如果流程前面已经执行过，不要重复执行。
+
+**工作流程规则**：
+
+1. **数据收集阶段**：  
+   - 允许使用 `数据收集工具`，**禁用其他所有工具**（包括 `terminate`）。  
+   - 数据收集完成条件：当 `{{collected_data}}` 长度超过 200 字符时，自动进入深度分析阶段。  
+   - 输出格式：`[数据收集结果] {{collected_data}} [DATA_COLLECTION_END]`  
+   - 如果尝试调用禁用工具，返回错误：`❌ 数据收集阶段禁止调用 {{tool_name}}！请仅使用数据收集工具。`
+
+2. **深度分析阶段**：  
+   - **禁用所有工具**（包括 `terminate`），仅允许生成分析文本。  
+   - 进入条件：`{{collected_data}}` 长度 ≥ 200 字符。  
+   - 输出格式：`[深度分析报告] {{analysis_content}} [ANALYSIS_END]`  
+   - 如果尝试调用任何工具，返回错误：`❌ 深度分析阶段禁止调用任何工具！请生成纯文本分析报告。`  
+   - 分析完成后，自动进入综合结论阶段。
+
+3. **综合结论阶段**：  
+   - 允许调用 `terminate` 结束任务。  
+   - 进入条件：深度分析阶段已完成（输出包含 `[ANALYSIS_END]`）。  
+   - 终止条件：最终结论必须包含至少 3 个关键发现和 1 条建议。  
+   - 输出格式：调用 `terminate` 并提交 `[最终结论] {{final_conclusion}}`  
+   - 如果未满足终止条件，返回错误：`❌ 结论必须包含至少 3 个关键发现和 1 条建议才能结束任务。`
+
+**数据验证与阶段过渡**：  
+- 如果 `{{collected_data}}` 存在但长度 < 200 字符，提示：`⚠️ 数据不完整，请继续收集数据至 200 字符以上。`  
+- 每个阶段结束时必须输出对应的结束标记（`[DATA_COLLECTION_END]` / `[ANALYSIS_END]`）以明确阶段完成。  
+- 阶段过渡前需确认：`确认{{current_stage}}阶段已完成？[YES/NO]`，仅当回答为 YES 时进入下一阶段。
+
+**错误恢复与回滚**：  
+- 如果检测到阶段被错误跳过，执行回滚：输出 `🔄 检测到阶段异常，回滚至 {{correct_stage}} 阶段。` 并重置 `{{current_stage}}`。  
+- 禁止在非综合结论阶段调用 `terminate`，否则返回：`❌ 违规操作！{{current_stage}} 阶段禁止调用 terminate！请重新生成纯文本输出。`
+
+# Experiments with Original Prompt Template
+
+## Experiment 1
+
+This experiment has succeeded. It gets a final reward: 0.2502448056292297
+
+### Rollout Traces (Chat Messages, Grader Requests included)
+
+[]
+
+## Experiment 2
+
+This experiment has succeeded. It gets a final reward: 0.5963053486645931
+
+### Rollout Traces (Chat Messages, Grader Requests included)
+
+[]
+
+## Experiment 3
+
+This experiment has succeeded. It gets a final reward: 0.30028730767773293
+
+### Rollout Traces (Chat Messages, Grader Requests included)
+
+[]
+
+## Experiment 4
+
+This experiment has succeeded. It gets a final reward: 0.7774121885057441
+
+### Rollout Traces (Chat Messages, Grader Requests included)
+
+[]
+
+# Your Task
+
+Produce a brief critique listing specific causes for the error or ways to raise reward next time. Return a bullet list with concrete, testable changes (format, constraints, ordering, definitions).

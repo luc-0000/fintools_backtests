@@ -1,0 +1,71 @@
+===== system =====
+
+Revise the given prompt template using the critique as constraints and improvement guide.
+
+# Revision Rules
+
+1. Rewrite or restructure the prompt if critique implies it.
+2. Explicitly include any requested output format, structure, or word limit, if requested by the critique.
+3. Prioritize mechanism-first phrasing: define what to do, then how to do it.
+4. Preserve placeholder variables inside curly brackets.
+
+# Output Format
+
+Return only the improved prompt template with placeholders intact. Do not include other explanations on how you did it, or headers and introductory texts.
+
+===== human =====
+
+# Prompt Template
+
+根据当前状态判断流程执行进度，直接进入下一阶段，避免重复执行已完成步骤。最终目标：生成一份最终结论报告。
+
+**工作流程与阶段规则**：
+
+1. **数据收集阶段**  
+   - **目标**：收集必要数据。  
+   - **允许工具**：仅 `数据收集工具`。  
+   - **禁止工具**：所有其他工具（包括 `terminate`）。  
+   - **输出格式**：`[数据收集结果]`  
+   - **触发下一阶段条件**：数据收集完成（状态中已包含所需数据或用户明确指示）。
+
+2. **深度分析阶段**  
+   - **目标**：基于收集的数据生成专业分析报告。  
+   - **允许操作**：仅生成纯文本分析内容。  
+   - **禁止操作**：调用任何工具（包括 `terminate`）。  
+   - **输出格式**：结构清晰的文本报告，不解释思考过程。  
+   - **触发下一阶段条件**：分析内容完整且用户未要求补充。
+
+3. **综合结论阶段**  
+   - **目标**：提交最终结论并结束任务。  
+   - **允许操作**：调用 `terminate` 工具。  
+   - **输出格式**：通过 `terminate` 提交最终结论。  
+   - **结束条件**：调用 `terminate` 成功。
+
+**状态处理与默认行为**：  
+- 若当前状态未定义或缺失，默认进入数据收集阶段。  
+- 若状态中已包含所需数据，跳过数据收集阶段，直接进入深度分析阶段。  
+- 若分析内容已完备且用户无进一步指示，进入综合结论阶段。
+
+**错误与违规处理**：  
+- 禁止在非综合结论阶段调用 `terminate`。如发生，重新生成当前阶段对应输出。  
+- 工具调用失败时，重试一次后转为纯文本输出并说明情况。  
+- 阶段过渡必须基于状态明确性，如状态模糊则请求用户确认。
+
+**输出规范**：  
+- 各阶段输出须严格遵循上述格式，无额外解释或元注释。  
+- 最终结论通过 `terminate` 提交，其他阶段均为纯文本。
+
+# Critique
+
+Based on the experiments and the original prompt template, here are specific critiques and testable improvements:
+
+- **Add explicit state tracking variables** - Include concrete status fields like `current_stage`, `data_collected`, and `analysis_complete` to eliminate ambiguity in phase transitions
+- **Define measurable completion criteria** - Specify what constitutes "required data" with concrete examples or minimum data points instead of vague terms
+- **Implement mandatory state validation** - Add a step where the system must explicitly confirm current phase and next phase transition logic before proceeding
+- **Clarify error recovery procedures** - Specify exactly what "retry once then convert to text" means with concrete fallback formats for each stage
+- **Add phase transition confirmation** - Require explicit user acknowledgment or system self-check before moving between stages, especially from analysis to conclusion
+- **Define "structured text report" format** - Provide a concrete template with required sections (executive summary, findings, recommendations) rather than leaving it open-ended
+- **Specify terminate tool parameters** - Define the exact structure and required fields for the final conclusion submitted via terminate
+- **Add progress validation checks** - Implement explicit verification that previous stage outputs meet quality thresholds before allowing phase advancement
+
+These changes would make the system's behavior more predictable and measurable, addressing the variance in reward scores across experiments.

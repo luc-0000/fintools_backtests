@@ -1,0 +1,241 @@
+{
+  "experiments": [
+    {
+      "status": "succeeded",
+      "final_reward": 0.5656118486459617,
+      "spans": [
+        {
+          "rollout_id": "ro-df141f29959b",
+          "attempt_id": "at-726cc251",
+          "sequence_id": 1,
+          "trace_id": "83a000b3263ab5054385f395b67b758b",
+          "span_id": "e02c4c368b045b66",
+          "parent_id": "3d26f7579c43d7a6",
+          "name": "agentlightning.reward",
+          "status": {
+            "status_code": "UNSET",
+            "description": null
+          },
+          "attributes": {
+            "reward": 0.5656118486459617
+          },
+          "events": [],
+          "links": [],
+          "start_time": 1763744804.919098,
+          "end_time": 1763744804.919102,
+          "context": {
+            "trace_id": "83a000b3263ab5054385f395b67b758b",
+            "span_id": "e02c4c368b045b66",
+            "is_remote": false,
+            "trace_state": {}
+          },
+          "parent": {
+            "trace_id": "83a000b3263ab5054385f395b67b758b",
+            "span_id": "3d26f7579c43d7a6",
+            "is_remote": false,
+            "trace_state": {}
+          },
+          "resource": {
+            "attributes": {
+              "service.name": "agentops",
+              "agentops.project.id": "dummy",
+              "imported_libraries": [
+                "logging",
+                "multiprocessing"
+              ]
+            },
+            "schema_url": ""
+          },
+          "kind": "SpanKind.INTERNAL",
+          "instrumentation_info": "InstrumentationInfo(agentlightning, , )",
+          "instrumentation_scope": "InstrumentationScope(agentlightning, , , {})",
+          "sampler": "<opentelemetry.sdk.trace.sampling.ParentBased object at 0x108237fd0>",
+          "trace_config": null,
+          "record_exception": true,
+          "set_status_on_exception": true,
+          "limits": "SpanLimits(max_span_attributes=128, max_events_attributes=128, max_link_attributes=128, max_attributes=128, max_events=128, max_links=128, max_attribute_length=None)",
+          "lock": "<unlocked _thread.lock object at 0x13894c780>"
+        }
+      ],
+      "messages": []
+    },
+    {
+      "status": "succeeded",
+      "final_reward": 0.4395488233375553,
+      "spans": [
+        {
+          "rollout_id": "ro-f917fee40a07",
+          "attempt_id": "at-d1042370",
+          "sequence_id": 1,
+          "trace_id": "83a000b3263ab5054385f395b67b758b",
+          "span_id": "bbb5a66de468a469",
+          "parent_id": "3d26f7579c43d7a6",
+          "name": "agentlightning.reward",
+          "status": {
+            "status_code": "UNSET",
+            "description": null
+          },
+          "attributes": {
+            "reward": 0.4395488233375553
+          },
+          "events": [],
+          "links": [],
+          "start_time": 1763744804.913986,
+          "end_time": 1763744804.91399,
+          "context": {
+            "trace_id": "83a000b3263ab5054385f395b67b758b",
+            "span_id": "bbb5a66de468a469",
+            "is_remote": false,
+            "trace_state": {}
+          },
+          "parent": {
+            "trace_id": "83a000b3263ab5054385f395b67b758b",
+            "span_id": "3d26f7579c43d7a6",
+            "is_remote": false,
+            "trace_state": {}
+          },
+          "resource": {
+            "attributes": {
+              "service.name": "agentops",
+              "agentops.project.id": "dummy",
+              "imported_libraries": [
+                "logging",
+                "multiprocessing"
+              ]
+            },
+            "schema_url": ""
+          },
+          "kind": "SpanKind.INTERNAL",
+          "instrumentation_info": "InstrumentationInfo(agentlightning, , )",
+          "instrumentation_scope": "InstrumentationScope(agentlightning, , , {})",
+          "sampler": "<opentelemetry.sdk.trace.sampling.ParentBased object at 0x108237fd0>",
+          "trace_config": null,
+          "record_exception": true,
+          "set_status_on_exception": true,
+          "limits": "SpanLimits(max_span_attributes=128, max_events_attributes=128, max_link_attributes=128, max_attributes=128, max_events=128, max_links=128, max_attribute_length=None)",
+          "lock": "<unlocked _thread.lock object at 0x13893bf80>"
+        }
+      ],
+      "messages": []
+    },
+    {
+      "status": "succeeded",
+      "final_reward": 0.9867937453174578,
+      "spans": [
+        {
+          "rollout_id": "ro-fa58d127c6cc",
+          "attempt_id": "at-bf7071b5",
+          "sequence_id": 1,
+          "trace_id": "83a000b3263ab5054385f395b67b758b",
+          "span_id": "21d001d51481d04b",
+          "parent_id": "3d26f7579c43d7a6",
+          "name": "agentlightning.reward",
+          "status": {
+            "status_code": "UNSET",
+            "description": null
+          },
+          "attributes": {
+            "reward": 0.9867937453174578
+          },
+          "events": [],
+          "links": [],
+          "start_time": 1763744804.900886,
+          "end_time": 1763744804.900897,
+          "context": {
+            "trace_id": "83a000b3263ab5054385f395b67b758b",
+            "span_id": "21d001d51481d04b",
+            "is_remote": false,
+            "trace_state": {}
+          },
+          "parent": {
+            "trace_id": "83a000b3263ab5054385f395b67b758b",
+            "span_id": "3d26f7579c43d7a6",
+            "is_remote": false,
+            "trace_state": {}
+          },
+          "resource": {
+            "attributes": {
+              "service.name": "agentops",
+              "agentops.project.id": "dummy",
+              "imported_libraries": [
+                "logging",
+                "multiprocessing"
+              ]
+            },
+            "schema_url": ""
+          },
+          "kind": "SpanKind.INTERNAL",
+          "instrumentation_info": "InstrumentationInfo(agentlightning, , )",
+          "instrumentation_scope": "InstrumentationScope(agentlightning, , , {})",
+          "sampler": "<opentelemetry.sdk.trace.sampling.ParentBased object at 0x108237fd0>",
+          "trace_config": null,
+          "record_exception": true,
+          "set_status_on_exception": true,
+          "limits": "SpanLimits(max_span_attributes=128, max_events_attributes=128, max_link_attributes=128, max_attributes=128, max_events=128, max_links=128, max_attribute_length=None)",
+          "lock": "<unlocked _thread.lock object at 0x138939a00>"
+        }
+      ],
+      "messages": []
+    },
+    {
+      "status": "succeeded",
+      "final_reward": 0.08655895874520447,
+      "spans": [
+        {
+          "rollout_id": "ro-cce7229da5c4",
+          "attempt_id": "at-9f7b4e12",
+          "sequence_id": 1,
+          "trace_id": "83a000b3263ab5054385f395b67b758b",
+          "span_id": "7fa1c101035cb145",
+          "parent_id": "3d26f7579c43d7a6",
+          "name": "agentlightning.reward",
+          "status": {
+            "status_code": "UNSET",
+            "description": null
+          },
+          "attributes": {
+            "reward": 0.08655895874520447
+          },
+          "events": [],
+          "links": [],
+          "start_time": 1763744804.908082,
+          "end_time": 1763744804.908086,
+          "context": {
+            "trace_id": "83a000b3263ab5054385f395b67b758b",
+            "span_id": "7fa1c101035cb145",
+            "is_remote": false,
+            "trace_state": {}
+          },
+          "parent": {
+            "trace_id": "83a000b3263ab5054385f395b67b758b",
+            "span_id": "3d26f7579c43d7a6",
+            "is_remote": false,
+            "trace_state": {}
+          },
+          "resource": {
+            "attributes": {
+              "service.name": "agentops",
+              "agentops.project.id": "dummy",
+              "imported_libraries": [
+                "logging",
+                "multiprocessing"
+              ]
+            },
+            "schema_url": ""
+          },
+          "kind": "SpanKind.INTERNAL",
+          "instrumentation_info": "InstrumentationInfo(agentlightning, , )",
+          "instrumentation_scope": "InstrumentationScope(agentlightning, , , {})",
+          "sampler": "<opentelemetry.sdk.trace.sampling.ParentBased object at 0x108237fd0>",
+          "trace_config": null,
+          "record_exception": true,
+          "set_status_on_exception": true,
+          "limits": "SpanLimits(max_span_attributes=128, max_events_attributes=128, max_link_attributes=128, max_attributes=128, max_events=128, max_links=128, max_attribute_length=None)",
+          "lock": "<unlocked _thread.lock object at 0x138939a00>"
+        }
+      ],
+      "messages": []
+    }
+  ],
+  "prompt_template": "根据当前状态，判断哪些流程已经执行完毕，直接执行下一个流程。如果流程前面已经执行过，不要重复执行。\n\n**阶段检测逻辑**：  \n{{ if 状态包含 \"[DATA_COLLECTION_RESULT:\" }}当前阶段 = \"深度分析\"  \n{{ else if 状态包含 \"[ANALYSIS_REPORT:\" }}当前阶段 = \"综合结论\"  \n{{ else }}当前阶段 = \"数据收集\"  \n{{ end }}\n\n**工作流程规则**：  \n1. **数据收集阶段**：  \n   - 允许使用 `数据收集工具`，**禁用其他所有工具**（包括 `terminate`）。  \n   - 输出格式：`[DATA_COLLECTION_RESULT: {收集的数据}]`  \n   - {{ if 状态包含 \"[DATA_COLLECTION_RESULT:\" }}跳过数据收集，直接进入深度分析阶段{{ end }}\n\n2. **深度分析阶段**：  \n   - **禁用所有工具**（包括 `terminate`），仅允许生成分析文本。  \n   - 输出格式：`[ANALYSIS_REPORT: {分析内容}]`  \n   - {{ if 状态包含 \"[ANALYSIS_REPORT:\" }}跳过深度分析，直接进入综合结论阶段{{ end }}\n\n3. **综合结论阶段**：  \n   - 允许调用 `terminate` 结束任务。  \n   - 输出格式：调用 `terminate` 工具并提交 `[FINAL_CONCLUSION: {最终结论}]`\n\n**违规检查**：  \n{{ if 当前阶段 == \"数据收集\" and 输出包含工具调用 and 调用工具 != \"数据收集工具\" }}  \n❗ 数据收集阶段违规：检测到非数据收集工具调用。允许工具：数据收集工具。检测到工具：{违规工具名}  \n{{ else if 当前阶段 == \"深度分析\" and 输出包含工具调用 }}  \n❗ 深度分析阶段违规：禁止调用任何工具！请重新生成纯文本分析报告，格式为：[ANALYSIS_REPORT: {分析内容}]  \n{{ else if 当前阶段 == \"综合结论\" and 输出不包含 \"terminate\" }}  \n❗ 综合结论阶段违规：必须调用 terminate 工具提交最终结论，格式为：[FINAL_CONCLUSION: {最终结论}]  \n{{ end }}\n\n**流程约束**：  \n{{ if 前一阶段已完成 }}禁止返回前一阶段操作{{ end }}"
+}

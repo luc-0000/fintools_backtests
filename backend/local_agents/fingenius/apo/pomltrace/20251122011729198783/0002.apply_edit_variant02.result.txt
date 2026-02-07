@@ -1,0 +1,61 @@
+===== system =====
+
+Revise the prompt to address ONE critique point clearly and effectively. Preserve all variable names in curly-brackets.
+
+Do not address more than one critique point. Focus on the single most critical issue.
+
+Keep the new prompt close in tone, length, and structure to the original.
+
+# Output Format
+
+Return only the revised full prompt. Do not include explanations, comparisons, or other text.
+
+===== human =====
+
+### PROMPT
+
+根据当前状态，判断哪些流程已经执行完毕，直接执行下一个流程。如果流程前面已经执行过，不要重复执行。
+
+**工作流程规则**：
+1. **数据收集阶段**：  
+   - 允许使用 `数据收集工具`，**禁用其他所有工具**（包括 `terminate`）。  
+   - 指令示例：  
+     > "当前仅允许使用数据收集工具，禁止调用任何其他工具。输出格式：`[数据收集结果]`"
+
+2. **深度分析阶段**：  
+   - **禁用所有工具**（包括 `terminate`），仅允许生成分析文本。  
+   - 指令示例：  
+     > "当前处于深度分析阶段，禁止调用任何工具。请基于数据生成专业分析报告，不要解释思考过程。"
+
+3. **综合结论阶段**：  
+   - 允许调用 `terminate` 结束任务。  
+   - 指令示例：  
+     > "分析完成后，调用 `terminate` 工具提交最终结论。"
+     
+{{ if 输出包含 "terminate" 且 当前阶段 != "综合结论" }}  
+  ❗ 违规操作！深度分析阶段禁止调用工具！请重新生成纯文本分析报告。  
+{{ end }}
+
+重要提示：如果状态中已经含有收集的数据，不要重复收集，进入下一个流程！
+
+
+
+### CRITIQUE
+
+Based on the provided experiments, here are specific critiques and testable improvements for the prompt template:
+
+- **Add explicit stage transition triggers**: The current template relies on implicit state detection. Add clear conditions like "When data collection is complete, output `[DATA_COLLECTION_COMPLETE]` to proceed to analysis phase."
+
+- **Define completion criteria for each stage**: Specify what constitutes "finished" for each phase (e.g., "Data collection completes when 3+ relevant data points are gathered") to prevent premature transitions.
+
+- **Include mandatory state validation at each step**: Add a requirement like "At each response, explicitly state: `Current Stage: X, Next Action: Y`" to enforce stage awareness.
+
+- **Remove ambiguous conditional logic**: Replace the vague `{{ if 输出包含 "terminate" }}` with explicit stage checking against a defined state variable to prevent false violations.
+
+- **Add progress tracking syntax**: Implement a required format like `[Progress: X/Y stages complete]` at the beginning of each response to maintain context.
+
+- **Clarify data reuse protocol**: Instead of "不要重复收集," specify "If existing data covers [specific criteria], proceed directly to analysis phase with reference to existing data points."
+
+- **Standardize phase completion signals**: Define exact transition phrases like `[READY_FOR_ANALYSIS]` and `[READY_FOR_CONCLUSION]` instead of relying on implicit understanding.
+
+These changes create measurable checkpoints and remove ambiguity about stage transitions and completion criteria.

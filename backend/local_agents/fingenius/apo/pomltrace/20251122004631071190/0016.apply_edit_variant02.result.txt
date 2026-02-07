@@ -1,0 +1,74 @@
+===== system =====
+
+Revise the prompt to address ONE critique point clearly and effectively. Preserve all variable names in curly-brackets.
+
+Do not address more than one critique point. Focus on the single most critical issue.
+
+Keep the new prompt close in tone, length, and structure to the original.
+
+# Output Format
+
+Return only the revised full prompt. Do not include explanations, comparisons, or other text.
+
+===== human =====
+
+### PROMPT
+
+根据当前状态，判断哪些流程已经执行完毕，直接执行下一个流程。如果流程前面已经执行过，不要重复执行。
+
+**工作流程规则**：
+1. **数据收集阶段**：  
+   - 允许使用 `数据收集工具`，**禁用其他所有工具**（包括 `terminate`）。  
+   - 指令示例：  
+     > "当前仅允许使用数据收集工具，禁止调用任何其他工具。输出格式：`[数据收集结果]`"
+
+2. **深度分析阶段**：  
+   - **禁用所有工具**（包括 `terminate`），仅允许生成分析文本。  
+   - 分析报告必须包含明确的标题、关键发现和基于数据的专业分析，避免解释思考过程。  
+   - 指令示例：  
+     > "当前处于深度分析阶段，禁止调用任何工具。请基于数据生成包含标题和关键发现的专业分析报告。"
+
+3. **综合结论阶段**：  
+   - 允许调用 `terminate` 结束任务。  
+   - 指令示例：  
+     > "分析完成后，调用 `terminate` 工具提交最终结论。"
+     
+{{ if 输出包含 "terminate" 且 当前阶段 != "综合结论" }}  
+  ❗ 违规操作！深度分析阶段禁止调用工具！请重新生成纯文本分析报告。  
+{{ end }}
+
+重要提示：如果状态中已经含有收集的数据，不要重复收集，进入下一个流程！
+
+### CRITIQUE
+
+**Critique of the Prompt**
+
+**1. Structural Issues**  
+- **Missing goal**: The prompt lacks a clear, one-line objective (e.g., “Analyze data and produce a final conclusion”).  
+- **Contradictions**: The rule “直接执行下一个流程” conflicts with the stage-specific tool restrictions—e.g., if data exists, skipping collection is logical, but the model must still enforce stage transitions without tool misuse.  
+- **No stop condition**: Only the “综合结论阶段” allows termination, but there’s no explicit check for when analysis is “complete” before moving stages.
+
+**2. Instruction Quality**  
+- **Vague verbs**: “判断哪些流程已经执行完毕” is ambiguous—how does the model “judge” stage completion without defined input?  
+- **Mixed abstraction**: High-level workflow rules are mixed with implementation examples, causing potential confusion between policy and procedure.  
+- **Overlapping scope**: Multiple mentions of “禁止调用任何其他工具” appear in different stages; these could be consolidated.
+
+**3. Control and Behavior**  
+- **Unclear uncertainty handling**: No guidance on what to do if stage transitions are unclear (e.g., if data exists but format is unknown).  
+- **Verbosity confusion**: The “深度分析阶段” demands “专业分析” but forbids “解释思考过程,” which may conflict if reasoning is part of analysis.  
+- **Feedback omission**: No requirement to announce stage transitions or validate outputs between steps.
+
+**4. Input and Output Specification**  
+- **No input defaults**: The prompt doesn’t specify what “当前状态” contains or how to handle missing/invalid state info.  
+- **Output schema missing**: Apart from stage-specific examples, no unified output format is defined for non-terminal stages.  
+- **Format inconsistency**: Uses Markdown-like formatting in examples but doesn’t enforce it globally.
+
+**5. Scope and Safety**  
+- **No error handling**: No instructions for tool failures or invalid data during analysis.  
+- **User authority ambiguity**: The model autonomously decides stage transitions, which could skip required steps if state is misinterpreted.
+
+**6. Efficiency and Maintainability**  
+- **Redundancy**: Repeated tool restrictions per stage; a single “allowed tools per stage” table would be clearer.  
+- **Hidden assumptions**: Assumes the model can accurately detect “already executed” stages from “当前状态” without explicit state schema.
+
+**Summary**: The prompt defines a staged workflow but suffers from ambiguity in transitions, missing state schema, and under-specified error handling. Restructure with a clear state representation, explicit completion criteria per stage, and consolidated tool policies.

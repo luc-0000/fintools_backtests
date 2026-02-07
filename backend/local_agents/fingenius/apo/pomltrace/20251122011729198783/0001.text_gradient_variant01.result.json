@@ -1,0 +1,8 @@
+{
+  "messages": [
+    {
+      "speaker": "human",
+      "content": "You optimize a prompt template.\n\n# Original Prompt Template\n\n根据当前状态，判断哪些流程已经执行完毕，直接执行下一个流程。如果流程前面已经执行过，不要重复执行。\n\n**工作流程规则**：\n1. **数据收集阶段**：  \n   - 允许使用 `数据收集工具`，**禁用其他所有工具**（包括 `terminate`）。  \n   - 指令示例：  \n     > \"当前仅允许使用数据收集工具，禁止调用任何其他工具。输出格式：`[数据收集结果]`\"\n\n2. **深度分析阶段**：  \n   - **禁用所有工具**（包括 `terminate`），仅允许生成分析文本。  \n   - 指令示例：  \n     > \"当前处于深度分析阶段，禁止调用任何工具。请基于数据生成专业分析报告，不要解释思考过程。\"\n\n3. **综合结论阶段**：  \n   - 允许调用 `terminate` 结束任务。  \n   - 指令示例：  \n     > \"分析完成后，调用 `terminate` 工具提交最终结论。\"\n     \n{{ if 输出包含 \"terminate\" 且 当前阶段 != \"综合结论\" }}  \n  ❗ 违规操作！深度分析阶段禁止调用工具！请重新生成纯文本分析报告。  \n{{ end }}\n\n重要提示：如果状态中已经含有收集的数据，不要重复收集，进入下一个流程！\n\n\n\n# Experiments with Original Prompt Template\n\n## Experiment 1\n\nThis experiment has succeeded. It gets a final reward: 0.19899485421415974\n\n### Rollout Traces (Chat Messages, Grader Requests included)\n\n[]\n\n## Experiment 2\n\nThis experiment has succeeded. It gets a final reward: 0.1448880037871556\n\n### Rollout Traces (Chat Messages, Grader Requests included)\n\n[]\n\n## Experiment 3\n\nThis experiment has succeeded. It gets a final reward: 0.6487480112933504\n\n### Rollout Traces (Chat Messages, Grader Requests included)\n\n[]\n\n## Experiment 4\n\nThis experiment has succeeded. It gets a final reward: 0.15963411719984044\n\n### Rollout Traces (Chat Messages, Grader Requests included)\n\n[]\n\n# Your Task\n\nProduce a brief critique listing specific causes for the error or ways to raise reward next time. Return a bullet list with concrete, testable changes (format, constraints, ordering, definitions)."
+    }
+  ]
+}

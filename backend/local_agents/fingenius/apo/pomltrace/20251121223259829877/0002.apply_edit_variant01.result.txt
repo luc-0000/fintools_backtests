@@ -1,0 +1,75 @@
+===== system =====
+
+Revise the given prompt template using the critique as constraints and improvement guide.
+
+# Revision Rules
+
+1. Rewrite or restructure the prompt if critique implies it.
+2. Explicitly include any requested output format, structure, or word limit, if requested by the critique.
+3. Prioritize mechanism-first phrasing: define what to do, then how to do it.
+4. Preserve placeholder variables inside curly brackets.
+
+# Output Format
+
+Return only the improved prompt template with placeholders intact. Do not include other explanations on how you did it, or headers and introductory texts.
+
+===== human =====
+
+# Prompt Template
+
+根据当前状态，判断哪些流程已经执行完毕，直接执行下一个流程。如果流程前面已经执行过，不要重复执行。
+
+**工作流程规则**：
+1. **数据收集阶段**：  
+   - 允许使用 `数据收集工具`，**禁用其他所有工具**（包括 `terminate`）。  
+   - 指令示例：  
+     > "当前仅允许使用数据收集工具，禁止调用任何其他工具。输出格式：`[数据收集结果]`"
+
+2. **深度分析阶段**：  
+   - **禁用所有工具**（包括 `terminate`），仅允许生成分析文本。  
+   - 指令示例：  
+     > "当前处于深度分析阶段，禁止调用任何工具。请基于数据生成专业分析报告，不要解释思考过程。"
+
+3. **综合结论阶段**：  
+   - 允许调用 `terminate` 结束任务。  
+   - 指令示例：  
+     > "分析完成后，调用 `terminate` 工具提交最终结论。"
+     
+{{ if 输出包含 "terminate" 且 当前阶段 != "综合结论" }}  
+  ❗ 违规操作！深度分析阶段禁止调用工具！请重新生成纯文本分析报告。  
+{{ end }}
+
+重要提示：如果状态中已经含有收集的数据，不要重复收集，进入下一个流程！
+
+
+
+# Critique
+
+**Critique of Prompt**
+
+**Structural Issues:**  
+- **Missing goal:** The prompt lacks a clear, one-line success definition (e.g., “produce a final analysis and terminate”).  
+- **No stop condition:** It doesn’t explicitly state when the entire process ends beyond the terminate call, risking open-ended execution.
+
+**Instruction Quality:**  
+- **Vague verbs:** “判断哪些流程已经执行完毕” is ambiguous—no criteria for “executed” are given.  
+- **Mixed abstraction:** High-level rules (e.g., “不要重复执行”) mix with implementation examples, causing confusion.  
+- **Overlapping scope:** The “重要提示” repeats the “不要重复收集” rule, creating redundancy.
+
+**Control and Behavior:**  
+- **Unclear uncertainty handling:** No guidance on what to do if the current stage is ambiguous or data is incomplete.  
+- **Verbosity confusion:** Some phases demand pure text (no explanations), but the prompt itself includes example outputs with extra text.
+
+**Input and Output Specification:**  
+- **No input defaults:** If “当前状态” is missing or unclear, the model has no fallback.  
+- **Output schema missing:** Apart from “[数据收集结果]” and terminate, expected formats for analysis or final output are undefined.
+
+**Scope and Safety:**  
+- **User authority ambiguity:** The model autonomously decides which stage is current and whether to skip stages, risking incorrect transitions.  
+- **No error handling:** No instructions for tool failures or invalid data in collection phase.
+
+**Efficiency and Maintainability:**  
+- **Overexplained:** Example instructions could be condensed into a stage table (tool permissions, output format).  
+- **Hidden assumptions:** Assumes “当前状态” reliably indicates completed stages, but this is not validated.
+
+**Summary:** The prompt’s phased structure is logical but suffers from ambiguous state transitions, undefined outputs, and missing error handling—leading to potential repetition or incorrect tool usage.

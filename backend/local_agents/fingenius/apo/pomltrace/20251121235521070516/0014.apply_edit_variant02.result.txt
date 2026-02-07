@@ -1,0 +1,81 @@
+===== system =====
+
+Revise the prompt to address ONE critique point clearly and effectively. Preserve all variable names in curly-brackets.
+
+Do not address more than one critique point. Focus on the single most critical issue.
+
+Keep the new prompt close in tone, length, and structure to the original.
+
+# Output Format
+
+Return only the revised full prompt. Do not include explanations, comparisons, or other text.
+
+===== human =====
+
+### PROMPT
+
+根据当前状态，判断哪些流程已经执行完毕，直接执行下一个流程。如果流程前面已经执行过，不要重复执行。
+
+**工作流程规则**：
+1. **数据收集阶段**：  
+   - 允许使用 `数据收集工具`，**禁用其他所有工具**（包括 `terminate`）。  
+   - 输出格式：`[数据收集结果]`  
+   - 如果状态中已包含有效收集数据，跳过此阶段，进入深度分析阶段。
+
+2. **深度分析阶段**：  
+   - **禁用所有工具**（包括 `terminate`），仅允许生成分析文本。  
+   - 基于数据生成专业分析报告，不要解释思考过程。  
+   - 输出格式：纯文本分析报告（不少于300字）。
+
+3. **综合结论阶段**：  
+   - 允许调用 `terminate` 结束任务。  
+   - 输出格式：调用 `terminate` 工具提交最终结论。
+
+**状态处理规则**：
+- 如果当前状态未定义或数据不完整，默认进入数据收集阶段。
+- 每个阶段完成后必须输出阶段完成确认（例如：“数据收集完成”或“深度分析完成”）。
+- 如果工具调用失败或数据无效，输出错误信息并保持在当前阶段。
+
+**终止条件**：
+- 仅在综合结论阶段调用 `terminate` 结束任务。
+- 最终输出必须包含完整分析结论。
+
+{{ if 输出包含 "terminate" 且 当前阶段 != "综合结论" }}  
+❗ 违规操作！深度分析阶段禁止调用工具！请重新生成纯文本分析报告。  
+{{ end }}
+
+重要提示：始终验证当前状态，避免重复执行已完成流程。
+
+### CRITIQUE
+
+**Critique of the Prompt**
+
+**Structural Issues:**  
+- **Missing goal:** The prompt lacks a clear, one-line success definition (e.g., “Produce a final analysis conclusion from data”).  
+- **Contradictions:** The “terminate” tool is disabled in early stages but required for final submission—this is clear, but the conditional check (`{{ if ... }}`) is ambiguous in execution context.  
+- **No stop condition:** The task ends only via `terminate` in the final stage, but no fallback is defined if `terminate` fails.
+
+**Instruction Quality:**  
+- **Vague verbs:** “判断哪些流程已经执行完毕” (“judge which processes are complete”) is subjective without explicit completion markers.  
+- **Mixed abstraction:** High-level rules (e.g., “avoid repeating completed processes”) mix with low-level tool restrictions, creating potential conflicts.  
+- **Overlapping scope:** State validation is mentioned in both “状态处理规则” and the final “重要提示,” causing redundancy.
+
+**Control and Behavior:**  
+- **Unclear uncertainty handling:** No guidance if state is ambiguous—defaults to data collection, but what if analysis data exists but is incomplete?  
+- **Verbosity confusion:** Analysis stage demands “不少于300字” (≥300 words), but other outputs are terse—style isn’t consistently defined.  
+- **Feedback omission:** No progress preamble is required before multi-step execution, risking user confusion.
+
+**Input and Output Specification:**  
+- **No input defaults:** Unclear what “数据不完整” (“incomplete data”) means—no validation criteria are provided.  
+- **Format inconsistency:** Output formats shift between `[数据收集结果]`, pure text, and tool calls.  
+- **No validation:** Missing a “verify before submit” step for the final conclusion.
+
+**Scope and Safety:**  
+- **No error handling:** If a tool fails, the prompt says “output error and stay in current stage,” but recovery steps are undefined.  
+- **User authority ambiguity:** The model autonomously judges completed stages without user confirmation for irreversible actions.
+
+**Efficiency and Maintainability:**  
+- **Redundancy:** Multiple reminders to check state and avoid repetition.  
+- **Hidden assumptions:** Assumes the model can accurately track “current stage” across turns with no memory mechanism described.
+
+**Summary:** The prompt enforces a staged workflow but suffers from ambiguous state transitions, undefined error handling, and inconsistent output formatting. Clarify completion criteria, state validation rules, and error recovery to improve reliability.

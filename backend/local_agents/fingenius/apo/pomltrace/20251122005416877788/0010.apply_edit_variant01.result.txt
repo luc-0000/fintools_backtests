@@ -1,0 +1,90 @@
+===== system =====
+
+Revise the given prompt template using the critique as constraints and improvement guide.
+
+# Revision Rules
+
+1. Rewrite or restructure the prompt if critique implies it.
+2. Explicitly include any requested output format, structure, or word limit, if requested by the critique.
+3. Prioritize mechanism-first phrasing: define what to do, then how to do it.
+4. Preserve placeholder variables inside curly brackets.
+
+# Output Format
+
+Return only the improved prompt template with placeholders intact. Do not include other explanations on how you did it, or headers and introductory texts.
+
+===== human =====
+
+# Prompt Template
+
+根据当前状态判断当前阶段，直接执行对应阶段的流程。如果流程前面已经执行过，不要重复执行。
+
+**状态变量定义**：
+- `current_phase`：当前阶段，取值为 `数据收集`、`深度分析` 或 `综合结论`
+- `collected_data`：已收集的数据内容（若不为空表示数据收集已完成）
+- `analysis_report`：已生成的分析报告内容（若不为空表示深度分析已完成）
+
+**阶段执行规则**：
+
+1. **数据收集阶段**（当 `collected_data` 为空时进入此阶段）：
+   - 允许使用 `数据收集工具`，**禁用其他所有工具**（包括 `terminate`）。
+   - 输出格式必须为：`[数据收集结果]`，并将结果保存至 `collected_data`
+   - 指令示例：
+     > "当前仅允许使用数据收集工具，禁止调用任何其他工具。输出格式：`[数据收集结果]`"
+
+2. **深度分析阶段**（当 `collected_data` 不为空且 `analysis_report` 为空时进入此阶段）：
+   - **禁用所有工具**（包括 `terminate`），仅允许生成纯文本分析报告。
+   - 分析报告应包含：数据解读、趋势分析、关键发现，字数限制在 300-500 字。
+   - 指令示例：
+     > "当前处于深度分析阶段，禁止调用任何工具。请基于 `collected_data` 生成专业分析报告，不要解释思考过程。"
+
+3. **综合结论阶段**（当 `analysis_report` 不为空时进入此阶段）：
+   - 允许调用 `terminate` 结束任务。
+   - 输出格式必须为：`[最终结论]`，并调用 `terminate` 工具提交
+   - 指令示例：
+     > "分析完成后，调用 `terminate` 工具提交最终结论。"
+
+**状态转换逻辑**：
+- 当 `collected_data` 从空变为非空时，自动进入深度分析阶段
+- 当 `analysis_report` 从空变为非空时，自动进入综合结论阶段
+- 如果 `collected_data` 已存在，跳过数据收集阶段
+- 如果 `analysis_report` 已存在，跳过深度分析阶段
+
+{{ if 输出包含 "terminate" 且 current_phase != "综合结论" }}  
+❗ 违规操作！当前阶段禁止调用工具！请重新生成纯文本分析报告。  
+{{ end }}
+
+重要提示：基于状态变量判断当前阶段，避免重复执行已完成流程！
+
+# Critique
+
+**Critique of Prompt**
+
+**Structural Issues**:  
+- **Missing goal**: The prompt lacks a clear, one-line success definition (e.g., "Produce a final conclusion from data").  
+- **Contradictions**: The `terminate` tool is allowed only in the final phase, but the sample runs show empty messages, implying no output—contradicting the required `[最终结论]` format.  
+- **No stop condition**: While `terminate` ends the task, the prompt doesn’t specify what happens if `terminate` isn’t called (e.g., in case of errors).
+
+**Instruction Quality**:  
+- **Vague verbs**: "深度分析" (deep analysis) lacks measurable criteria for "trend analysis" or "key findings."  
+- **Mixed abstraction**: High-level phase rules are mixed with implementation details (e.g., output format examples), causing potential confusion.  
+- **Overlapping scope**: State transition logic repeats phase entry conditions, creating redundancy.
+
+**Control and Behavior**:  
+- **Unclear uncertainty handling**: No guidance if `collected_data` is invalid or analysis fails—model might stall.  
+- **Verbosity confusion**: Analysis phase demands 300–500 words, but other phases require terse formats, creating inconsistency.  
+- **Feedback omission**: No progress reporting between phases; model must infer state silently.
+
+**Input and Output Specification**:  
+- **No input defaults**: If `collected_data` is empty but data collection fails, recovery steps are undefined.  
+- **Format inconsistency**: Output formats (`[数据收集结果]`, `[最终结论]`) are rigid but not validated in sample runs (all messages are empty).
+
+**Scope and Safety**:  
+- **No error handling**: Tool failures or invalid data aren’t addressed, risking infinite loops.  
+- **User authority ambiguity**: Model autonomously transitions phases without user confirmation for irreversible actions.
+
+**Efficiency and Maintainability**:  
+- **Redundancy**: State logic is explained twice (in rules and transition section).  
+- **Hidden assumptions**: Assumes `collected_data` and `analysis_report` are reliably updated, but mechanism isn’t specified.
+
+**Summary**: The prompt defines a phased workflow but suffers from unclear goals, contradictory evidence from samples, and missing error handling. It needs explicit success criteria, conflict resolution, and fallback procedures for robustness.

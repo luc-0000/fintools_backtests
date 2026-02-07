@@ -1,0 +1,74 @@
+===== system =====
+
+Revise the given prompt template using the critique as constraints and improvement guide.
+
+# Revision Rules
+
+1. Rewrite or restructure the prompt if critique implies it.
+2. Explicitly include any requested output format, structure, or word limit, if requested by the critique.
+3. Prioritize mechanism-first phrasing: define what to do, then how to do it.
+4. Preserve placeholder variables inside curly brackets.
+
+# Output Format
+
+Return only the improved prompt template with placeholders intact. Do not include other explanations on how you did it, or headers and introductory texts.
+
+===== human =====
+
+# Prompt Template
+
+根据当前状态，判断哪些流程已经执行完毕，直接执行下一个流程。如果流程前面已经执行过，不要重复执行。
+
+**工作流程规则**：
+1. **数据收集阶段**：  
+   - 允许使用 `数据收集工具`，**禁用其他所有工具**（包括 `terminate`）。  
+   - 指令示例：  
+     > "当前仅允许使用数据收集工具，禁止调用任何其他工具。输出格式：`[数据收集结果]`"
+
+2. **深度分析阶段**：  
+   - **禁用所有工具**（包括 `terminate`），仅允许生成分析文本。  
+   - 指令示例：  
+     > "当前处于深度分析阶段，禁止调用任何工具。请基于数据生成专业分析报告，不要解释思考过程。"
+
+3. **综合结论阶段**：  
+   - 允许调用 `terminate` 结束任务。  
+   - 指令示例：  
+     > "分析完成后，调用 `terminate` 工具提交最终结论。"
+     
+{{ if 输出包含 "terminate" 且 当前阶段 != "综合结论" }}  
+  ❗ 违规操作！深度分析阶段禁止调用工具！请重新生成纯文本分析报告。  
+{{ end }}
+
+重要提示：如果状态中已经含有收集的数据，不要重复收集，进入下一个流程！
+
+
+
+# Critique
+
+**Critique of the Prompt**
+
+**1. Structural Issues**  
+- **Missing goal**: The prompt lacks a clear, one-line definition of success (e.g., "produce a final conclusion report").  
+- **No stop condition**: The only stop condition is calling `terminate`, but the prompt does not define when the model should transition between stages or what triggers the final stage.
+
+**2. Instruction Quality**  
+- **Vague verbs**: "判断哪些流程已经执行完毕" ("judge which processes are complete") is ambiguous—no criteria are given for determining completion.  
+- **Mixed abstraction**: High-level workflow rules are mixed with implementation details (e.g., tool restrictions per stage), but stage transitions are not clearly defined.
+
+**3. Control and Behavior**  
+- **Unclear uncertainty handling**: The prompt does not specify how to handle missing or ambiguous state information (e.g., what if "current state" is undefined?).  
+- **Verbosity confusion**: Some stages demand pure text output, but the prompt includes templated instructions that may encourage unnecessary formatting.
+
+**4. Input and Output Specification**  
+- **No input defaults**: The prompt assumes "current state" is provided but does not define what to do if it is missing or invalid.  
+- **Output schema missing**: While example outputs are given, there is no consistent schema for responses across stages.
+
+**5. Scope and Safety**  
+- **No error handling**: The prompt lacks instructions for tool failures or invalid transitions (e.g., what if `terminate` is called prematurely?).  
+- **User authority ambiguity**: The model must infer stage transitions based on state, but no explicit user approval is required for irreversible actions (e.g., moving to final stage).
+
+**6. Efficiency and Maintainability**  
+- **Redundancy**: The conditional warning about `terminate` is repetitive with the stage rules.  
+- **Hidden assumptions**: It is assumed that "current state" includes stage and data status, but this is not explicitly defined.
+
+**Summary**: The prompt has logical gaps in stage transitions, undefined completion criteria, and insufficient error handling. Clarify the goal, define state transitions explicitly, and specify fallback behaviors for missing inputs.

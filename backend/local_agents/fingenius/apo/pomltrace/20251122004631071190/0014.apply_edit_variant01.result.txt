@@ -1,0 +1,72 @@
+===== system =====
+
+Revise the given prompt template using the critique as constraints and improvement guide.
+
+# Revision Rules
+
+1. Rewrite or restructure the prompt if critique implies it.
+2. Explicitly include any requested output format, structure, or word limit, if requested by the critique.
+3. Prioritize mechanism-first phrasing: define what to do, then how to do it.
+4. Preserve placeholder variables inside curly brackets.
+
+# Output Format
+
+Return only the improved prompt template with placeholders intact. Do not include other explanations on how you did it, or headers and introductory texts.
+
+===== human =====
+
+# Prompt Template
+
+根据当前状态，判断哪些流程已经执行完毕，直接执行下一个流程。如果流程前面已经执行过，不要重复执行。
+
+**工作流程规则**：
+1. **数据收集阶段**：  
+   - 允许使用 `数据收集工具`，**禁用其他所有工具**（包括 `terminate`）。  
+   - 指令示例：  
+     > "当前仅允许使用数据收集工具，禁止调用任何其他工具。输出格式：`[数据收集结果]`"
+
+2. **深度分析阶段**：  
+   - **禁用所有工具**（包括 `terminate`），仅允许生成分析文本。  
+   - 分析报告必须包含明确的标题、关键发现和基于数据的专业分析，避免解释思考过程。  
+   - 指令示例：  
+     > "当前处于深度分析阶段，禁止调用任何工具。请基于数据生成包含标题和关键发现的专业分析报告。"
+
+3. **综合结论阶段**：  
+   - 允许调用 `terminate` 结束任务。  
+   - 指令示例：  
+     > "分析完成后，调用 `terminate` 工具提交最终结论。"
+     
+{{ if 输出包含 "terminate" 且 当前阶段 != "综合结论" }}  
+  ❗ 违规操作！深度分析阶段禁止调用工具！请重新生成纯文本分析报告。  
+{{ end }}
+
+重要提示：如果状态中已经含有收集的数据，不要重复收集，进入下一个流程！
+
+# Critique
+
+Based on the experiments and the original prompt template, here are specific critiques and testable improvements:
+
+- **Add explicit stage transition logic** - The prompt should include clear conditions for moving between stages (e.g., "If data collection results exist, immediately proceed to analysis stage") rather than relying on implicit understanding
+
+- **Define concrete output validation rules** - Instead of generic format examples, specify exact validation patterns like:
+  - Data collection stage: `^\[数据收集结果\]: .+` (must match regex pattern)
+  - Analysis stage: Must contain "## 分析报告" header and "### 关键发现" subsection
+  - Conclusion stage: Must contain `terminate` call with specific parameter structure
+
+- **Implement stage tracking variables** - Add explicit state tracking: `{{当前阶段}} = "数据收集" | "深度分析" | "综合结论"` that gets updated based on completion criteria
+
+- **Strengthen tool restriction enforcement** - Replace generic warnings with hard constraints:
+  ```
+  {{ if 当前阶段 == "数据收集" && 工具调用 != "数据收集工具" }}
+  错误：当前阶段仅允许数据收集工具！请重新执行。
+  {{ end }}
+  ```
+
+- **Add completion verification checks** - Before stage transitions, verify outputs meet minimum requirements:
+  - Data collection: Must contain at least 3 distinct data points
+  - Analysis: Must contain at least 2 key findings with supporting data references
+  - Conclusion: Must reference both data and analysis findings
+
+- **Improve error recovery guidance** - Provide specific retry instructions for each violation type rather than generic "re-generate" messages
+
+- **Optimize output formatting consistency** - Standardize markdown formatting across all stages to reduce parsing variability during evaluation
