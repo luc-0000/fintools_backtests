@@ -39,10 +39,6 @@ env/
 *.log
 logs/
 
-# Database
-*.sql
-*.sqlite
-*.db
 
 # Backend specific
 backend/logs/
