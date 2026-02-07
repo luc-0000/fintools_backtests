@@ -8,7 +8,6 @@
 - 📈 **规则回测**：定义交易规则并测试历史表现
 - 🤖 **Agent 交易**：支持本地和远程 Agent 的智能交易决策
 - 📉 **模拟器**：实时模拟交易并跟踪收益
-- 🔄 **数据更新**：自动更新股票数据和交易信号
 
 ## 系统架构
 
@@ -127,7 +126,7 @@ npm run dev
 #### Agent Schema 规范
 
 **Input**:
-- `stock_code` (str): 股票代码，如 `"600519.SH"`
+- `stock_code` (str): 股票代码，如 `"600519"`
 
 **Output**:
 - `bool`: `True` 表示建议买入 (indicating)，`False` 表示不买
@@ -218,9 +217,9 @@ FINTOOLS_ACCESS_TOKEN=your-fintools-access-token
 3. **在前端创建远程 Agent Rule**
 
 在前端 Rule 创建页面，填写以下信息：
-- **名称**: 自定义 Rule 名称
+- **名称**: 自定义 Agent 名称
 - **A2A URL**: 填写从 fintools 网站获取的 URL
-- **描述**: 填写 Rule 描述
+- **描述**: 填写 Agent 描述
 
 
 ![alt text](image.png)
@@ -245,14 +244,6 @@ FINTOOLS_ACCESS_TOKEN=your-fintools-access-token
 http://localhost:8888/docs
 ```
 
-## 数据更新
-
-### 更新股票列表
-
-```bash
-cd backend
-python data_processing/update_stocks/update_all_stocks_list.py
-```
 
 ### 更新股票数据
 
